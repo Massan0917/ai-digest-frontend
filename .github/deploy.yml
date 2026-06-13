@@ -1,0 +1,40 @@
+name: Deploy to S3
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run build
+
+      - uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: arn:aws:iam::541394734431:role/github-actions-ai-digest-frontend-deploy
+          aws-region: ap-northeast-1
+
+      - run: |
+          aws s3 sync dist/ s3://ai-digest-frontend \
+            --delete
+
+      - run: |
+          aws cloudfront create-invalidation \
+            --distribution-id EEIH2W37NBK40 \
+            --paths "/*"
