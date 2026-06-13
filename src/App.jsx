@@ -6,7 +6,7 @@ function App() {
   useEffect(() => {
     const fetchDigest = async () => {
       const response = await fetch(
-	      "https://yfjxpc4c43.execute-api.ap-northeast-1.amazonaws.com/digest"
+              "https://yfjxpc4c43.execute-api.ap-northeast-1.amazonaws.com/digest"
       );
 
       const result = await response.json();
@@ -21,19 +21,22 @@ function App() {
 
   return (
     <div>
-      	<h1>AI Digest</h1>
-	<h2>{data?.title}</h2>
+        <h1>AI Digest</h1>
+        <h2>{data?.date}</h2>
+        <h2>{data?.title}</h2>
 
-	{
-		Object.entries(data || {}).map(
-			([title,content]) => (
-				<div key={title}>
-					<h3>{title}</h3>
-					<p>{content}</p>
-				</div>
-			)	
-		)
-	}
+        {
+                Object.entries(data?.content || {}).map(
+                        ([key,value]) => (
+                                <div key={key}>
+                                        <h3>{key}</h3>
+                                        <p>{String(value)}</p>
+                                </div>
+                        )
+                )
+        }
+
+        参照先URL : <a href="{data?.referenceUrl}">{data?.referenceUrl}</a>
     </div>
   );
 }
