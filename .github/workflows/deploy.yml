@@ -27,14 +27,14 @@ jobs:
 
       - uses: aws-actions/configure-aws-credentials@v5
         with:
-          role-to-assume: arn:aws:iam::541394734431:role/github-actions-ai-digest-frontend-deploy
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ap-northeast-1
 
       - run: |
-          aws s3 sync dist/ s3://ai-digest-frontend \
+          aws s3 sync dist/ s3://${{ secrets.S3_BUCKET }} \
             --delete
 
       - run: |
           aws cloudfront create-invalidation \
-            --distribution-id EEIH2W37NBK40 \
+            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
             --paths "/*"
